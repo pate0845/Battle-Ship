@@ -1,3 +1,7 @@
+
+
+window.onload=init();
+
 let view={
     displayMessage:function(msg){
         var messageArea=document.getElementById('messageArea');
@@ -12,10 +16,6 @@ let view={
         cell.setAttribute('class','miss');
     }
 };
-
-// view.displayMiss('00');
-// view.displayHit('02');
-// view.displayMessage("You miss");
 
 
 var model={
@@ -103,22 +103,31 @@ var model={
 };
 
 
-// model.fire('20');
-// model.fire('10');
-// model.fire('30');
 
 var controller={
     guesses:0,
+    locations:[],
     processGuess:function(guess){
         var location=parseGuess(guess);
-        if(location){
+        if(this.usedLocations(location)){
+            alert("Please enter location that is not entered already!");
+        }
+        if(location&&this.usedLocations(location)==false){
             this.guesses++;
+            this.locations.push(''+location);
             var hit=model.fire(location);
             if(hit&&model.shipsSunk===model.numShips){
                 view.displayMessage("You sank all my battleships, in"
                 +this.guesses+'guesses');
             }
         }
+    },
+    usedLocations:function(location){
+        var isUsed=false;
+            if(this.locations.indexOf(location)>=0){
+                isUsed=true; 
+            }
+        return isUsed;
     }
 }
 
@@ -167,5 +176,4 @@ function handleKeyPress(e){
         return false;
     }
 }
-window.onload=init();
 
